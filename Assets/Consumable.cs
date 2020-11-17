@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class Consumable : MonoBehaviour
 {
-    public GameObject Props_PotionBig_Red;
-    public Text PotionPicked;
+	public GameObject Props_PotionBig_Red;
+	public Text PotionPicked;
 
 	public bool GuiOn;
 
