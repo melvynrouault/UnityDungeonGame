@@ -8,6 +8,9 @@ public class Inventory : MonoBehaviour
     public string slotItem;
 
 	public GameObject Props_PotionBig_Red;
+	public GameObject Props_PotionBig_Purple;
+	public GameObject Props_PotionBig_Blue;
+    public GameObject resetItem;
 
 
 
@@ -25,12 +28,20 @@ public class Inventory : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider col) {
-        if (col.name == "Props_PotionBig_Red") {
+        if (col.name == "Props_PotionBig_Red" || col.name == "Props_PotionBig_Purple" || col.name == "Props_PotionBig_Blue") {
             Debug.Log("enter in trigger Consumable");
             if (slot == 0) {
                 slot++;
                 slotItem = col.name;
                 Debug.Log("ItemName : " + slotItem);
+            }
+        }
+
+        // to replace by onClick methods on interface when user use his potion
+        if (col.name == "resetItem") {
+            if (slot == 1) {
+                slot = 0;
+                Debug.Log("Item reset");
             }
         }
     }
