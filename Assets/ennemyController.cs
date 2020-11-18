@@ -26,7 +26,7 @@ public class ennemyController : MonoBehaviour {
     void Update () {
         Debug.Log(enemyHealth);
         if(enemyHealth <=0)
-        Destroy(gameObject);
+            Destroy(gameObject);
 
         playerDistance = Vector3.Distance (player.position, transform.position);
         if (playerDistance < awareAI)
@@ -48,7 +48,7 @@ public class ennemyController : MonoBehaviour {
 
         if (agent.remainingDistance < 0.5f)
             GotoNextPoint();	
-        }
+    }
 
     void LookAtPlayer()
     {
@@ -59,7 +59,7 @@ public class ennemyController : MonoBehaviour {
     void GotoNextPoint()
     {
         if (navPoint.Length == 0)
-        return;       
+            return;       
         agent.destination = navPoint[destPoint].position;
         destPoint = (destPoint + 1) % navPoint.Length;
     }
@@ -67,7 +67,7 @@ public class ennemyController : MonoBehaviour {
 
     void Chase ()
     {
-        transform.Translate (Vector3.forward * AIMoveSpeed * Time.deltaTime);
+        transform.Translate (Vector3.forward * (AIMoveSpeed * Time.deltaTime));
     }
 
 

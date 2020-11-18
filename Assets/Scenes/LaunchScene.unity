@@ -120,7 +120,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 87dee773a700966428b9393aa82c8dc9, type: 2}
 --- !u!1 &42734228
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab8d2300a1f0634490e3aed5364699a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneNameToLoad: SampleScene
+  sceneNameToLoad: WorldScene
 --- !u!4 &42734230
 Transform:
   m_ObjectHideFlags: 0
