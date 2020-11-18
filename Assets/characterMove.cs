@@ -20,6 +20,7 @@ public class characterMove : MonoBehaviour
 
     public string inputAttack;
 
+
     public Vector3 jumpSpeed;
     CapsuleCollider playerCollider; 
 
@@ -40,17 +41,17 @@ public class characterMove : MonoBehaviour
         animators = gameObject.GetComponent<Animator>();
         playerCollider = gameObject.GetComponent<CapsuleCollider>();
         this.life = 100;
+
     }
 
     bool IsGrounded() 
     {
-        return Physics.CheckCapsule(playerCollider.bounds.center, new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f,  LayerMask.GetMask("Player"));
+        return Physics.CheckCapsule(playerCollider.bounds.center, new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f);
     }
 
     // Update is called once per frame
     void Update()
     {
-
         // si on avance
         if (Input.GetKey(inputFront) && !Input.GetKey(KeyCode.LeftShift))
         {
@@ -116,7 +117,7 @@ public class characterMove : MonoBehaviour
 
         //si on saute
 
-        if (Input.GetKey(Down(KeyCode.Space)) && IsGrounded())
+        if (Input.GetKeyDown((KeyCode.Space)) && IsGrounded())
         {
             //Préparation du saut
             Vector3 v = gameObject.GetComponent<Rigidbody>().velocity;
@@ -125,8 +126,6 @@ public class characterMove : MonoBehaviour
             //Saut
             gameObject.GetComponent<Rigidbody>().velocity = jumpSpeed;
         }
-
-        
 
         //Attaque 
 
@@ -155,9 +154,19 @@ public class characterMove : MonoBehaviour
 
                 if (hit.transform.tag == "test") {
                     print(hit.transform.name + "detected");
+                    Dead();
                 }
             }
             isAttacking = true;
         }   
+    }
+
+    public void Dead() {
+        if (life <= 0) {
+            isDead = true;
+            animators.Play("Die");
+        }else{
+            isDead = false;
+        }
     }
 }
