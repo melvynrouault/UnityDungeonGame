@@ -52,7 +52,13 @@ public class DogInventory : MonoBehaviour
                     Debug.Log("Add health");
                     appleItem.SetActive(false);
                     localHealth = gameObject.GetComponent<DogStats>().getHealth();
-                    localHealth += 10;
+                    localHealth += 20;
+                    if(localHealth > 100) {
+                        Debug.Log("full hp");
+                        localHealth = 100;
+                    } else {
+                        Debug.Log("not full hp");
+                    }
                     gameObject.GetComponent<DogStats>().setHealth(localHealth);
                 }
 
