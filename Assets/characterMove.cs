@@ -27,9 +27,11 @@ public class characterMove : MonoBehaviour
     public float attackCooldown; 
     private bool isAttacking; 
     private float currentCooldown;
+    public float attackRange; 
+
+    public int life; 
 
     // Le personnage est-il mort ? 
-
     public bool isDead = false;
 
     // Start is called before the first frame update
@@ -37,11 +39,12 @@ public class characterMove : MonoBehaviour
     {
         animators = gameObject.GetComponent<Animator>();
         playerCollider = gameObject.GetComponent<CapsuleCollider>();
+        this.life = 100;
     }
 
     bool IsGrounded() 
     {
-        return Physics.CheckCapsule(playerCollider.bounds.center, new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f);
+        return Physics.CheckCapsule(playerCollider.bounds.center, new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f,  LayerMask.GetMask("Player"));
     }
 
     // Update is called once per frame
@@ -113,7 +116,7 @@ public class characterMove : MonoBehaviour
 
         //si on saute
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if (Input.GetKey(Down(KeyCode.Space)) && IsGrounded())
         {
             //Préparation du saut
             Vector3 v = gameObject.GetComponent<Rigidbody>().velocity;
@@ -141,7 +144,20 @@ public class characterMove : MonoBehaviour
 
     public void Attack() 
     {
-        isAttacking = true; 
-        animators.Play("Attack01");
+        if (!isAttacking) 
+        {
+            animators.Play("Attack01");
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + Vector3.up * 0.25f, transform.TransformDirection(Vector3.forward), out hit, attackRange)) 
+            {
+                Debug.DrawLine(transform.position + Vector3.up * 0.25f, hit.point, Color.red); 
+
+                if (hit.transform.tag == "test") {
+                    print(hit.transform.name + "detected");
+                }
+            }
+            isAttacking = true;
+        }   
     }
 }
