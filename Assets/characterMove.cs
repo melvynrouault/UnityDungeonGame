@@ -20,7 +20,6 @@ public class characterMove : MonoBehaviour
 
     public string inputAttack;
 
-
     public Vector3 jumpSpeed;
     CapsuleCollider playerCollider; 
 
@@ -52,6 +51,9 @@ public class characterMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Dead();
+
         // si on avance
         if (Input.GetKey(inputFront) && !Input.GetKey(KeyCode.LeftShift))
         {
@@ -154,7 +156,7 @@ public class characterMove : MonoBehaviour
 
                 if (hit.transform.tag == "test") {
                     print(hit.transform.name + "detected");
-                    Dead();
+                    //Dead();
                 }
             }
             isAttacking = true;
