@@ -30,6 +30,7 @@ public class characterMove : MonoBehaviour
     public float attackRange; 
 
     public int life; 
+    public int degats; 
 
     // Le personnage est-il mort ? 
     public bool isDead = false;
@@ -148,20 +149,20 @@ public class characterMove : MonoBehaviour
         if (!isAttacking) 
         {
             animators.Play("Attack01");
-
+ 
             RaycastHit hit;
             if (Physics.Raycast(transform.position + Vector3.up * 0.25f, transform.TransformDirection(Vector3.forward), out hit, attackRange)) 
             {
                 Debug.DrawLine(transform.position + Vector3.up * 0.25f, hit.point, Color.red); 
-
+ 
                 if (hit.transform.tag == "test") {
-                    print(hit.transform.name + "detected");
-                    //Dead();
+                    hit.transform.GetComponent<Stats>().takeDamage(degats);        
                 }
             }
             isAttacking = true;
         }   
     }
+
 
     public void Dead() {
         if (life <= 0) {
