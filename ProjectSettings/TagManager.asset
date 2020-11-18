@@ -20,6 +20,7 @@ TagManager:
   - MainInventory
   - Timer
   - apple
+  - test
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Player
   - 
   - 
   - 
