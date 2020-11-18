@@ -5,7 +5,7 @@ using UnityEngine;
 public class DogStats : MonoBehaviour
 {
 
-    public int heatlh;
+    public int health;
     public float power;
     public float defense;
     public bool isAttackPowerUp;
@@ -16,7 +16,7 @@ public class DogStats : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        heatlh = 100;
+        health = 100;
         power = 10.00f;
         defense = 10.00f;
         isAttackPowerUp = false;
@@ -28,13 +28,27 @@ public class DogStats : MonoBehaviour
         
     }
 
-    // to replace by onClick methods on interface when user use his potion
-    private void OnTriggerEnter(Collider col) {
-        // Red potion (health)
-        if(col.name == "useConsummable") {
-            heatlh += 10;
-            Debug.Log("stats Changed");
+    public int getHealth() {
+        return health;
+    }
 
-        }
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public float getPower() {
+        return power;
+    }
+
+    public void setPower(float power) {
+        this.power = power;
+    }
+
+    public float getDefense() {
+        return defense;
+    }
+
+    public void setDefense(float defense) {
+        this.defense = defense;
     }
 }
