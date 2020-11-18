@@ -119,7 +119,7 @@ public class characterMove : MonoBehaviour
 
         //si on saute
 
-        if (Input.GetKeyDown((KeyCode.Space)) && IsGrounded())
+        if (Input.GetKey(KeyCode.Space) && IsGrounded())
         {
             //Préparation du saut
             Vector3 v = gameObject.GetComponent<Rigidbody>().velocity;
