@@ -7755,7 +7755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 205873005}
   playerDistance: 0
-  awareAI: 10
+  awareAI: 4
   AIMoveSpeed: 5
   damping: 6
   navPoint:

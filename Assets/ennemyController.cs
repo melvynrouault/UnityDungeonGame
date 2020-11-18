@@ -29,7 +29,6 @@ public class ennemyController : MonoBehaviour {
         Destroy(gameObject);
 
         playerDistance = Vector3.Distance (player.position, transform.position);
-
         if (playerDistance < awareAI)
         {
             LookAtPlayer();
