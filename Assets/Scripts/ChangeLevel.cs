@@ -36,8 +36,6 @@ public class ChangeLevel : MonoBehaviour
                 break;
         }
         
-        Debug.Log(WorldSettings.Instance.Level);
-
         SceneManager.LoadScene(sceneNameToLoad);
     }
 }

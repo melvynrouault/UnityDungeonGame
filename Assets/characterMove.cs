@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class characterMove : MonoBehaviour
 {
@@ -20,7 +22,6 @@ public class characterMove : MonoBehaviour
 
     public string inputAttack;
 
-    public Vector3 jumpSpeed;
     CapsuleCollider playerCollider; 
 
     // Variables concernant l'attaque
@@ -29,38 +30,33 @@ public class characterMove : MonoBehaviour
     private float currentCooldown;
     public float attackRange; 
 
-    public int life; 
-    public int degats; 
-
     // Le personnage est-il mort ? 
     public bool isDead = false;
+
+    private bool takeDamage = false;
 
     // Start is called before the first frame update
     void Start()
     {
         animators = gameObject.GetComponent<Animator>();
         playerCollider = gameObject.GetComponent<CapsuleCollider>();
-        this.life = 100;
-
-    }
-
-    bool IsGrounded() 
-    {
-        return Physics.CheckCapsule(playerCollider.bounds.center, new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f);
     }
 
     // Update is called once per frame
     void Update()
     {
-
         Dead();
+        if (isDead) return;
+
+        Hit();
+        if (takeDamage) return;
 
         // si on avance
         if (Input.GetKey(inputFront) && !Input.GetKey(KeyCode.LeftShift))
         {
             transform.Translate(0, 0, walkSpeed * Time.deltaTime);
 
-            if (!isAttacking)
+            if (!isAttacking && !takeDamage)
             {
                 animators.Play("WalkForwardBattle");
             }
@@ -81,7 +77,7 @@ public class characterMove : MonoBehaviour
         if (Input.GetKey(inputBack)) {
             transform.Translate(0, 0, -(walkSpeed / 2) * Time.deltaTime);
 
-            if (!isAttacking)
+            if (!isAttacking && !takeDamage)
             {
                 animators.Play("WalkForwardBattle");
             } 
@@ -107,7 +103,7 @@ public class characterMove : MonoBehaviour
         // si on avance pas et que l'on ne recule pas
         if (!Input.GetKey(inputFront) && !Input.GetKey(inputBack)) 
         {
-            if (!isAttacking)
+            if (!isAttacking && !takeDamage)
             {
                 animators.Play("Idle_Battle");
             } 
@@ -117,19 +113,7 @@ public class characterMove : MonoBehaviour
                 Attack();
             }
         }
-
-        //si on saute
-
-        if (Input.GetKey(KeyCode.Space) && IsGrounded())
-        {
-            //Préparation du saut
-            Vector3 v = gameObject.GetComponent<Rigidbody>().velocity;
-            v.y = jumpSpeed.y; 
-
-            //Saut
-            gameObject.GetComponent<Rigidbody>().velocity = jumpSpeed;
-        }
-
+        
         //Attaque 
 
         if (isAttacking)
@@ -141,6 +125,13 @@ public class characterMove : MonoBehaviour
         {
             currentCooldown = attackCooldown; 
             isAttacking = false;
+        }
+        
+        if (takeDamage)
+        {
+            animators.Play("GetHit");
+            StartCoroutine(hitAnimation());
+            takeDamage = false;
         }
     }
 
@@ -155,21 +146,60 @@ public class characterMove : MonoBehaviour
             {
                 Debug.DrawLine(transform.position + Vector3.up * 0.25f, hit.point, Color.red); 
  
-                if (hit.transform.tag == "test") {
-                    hit.transform.GetComponent<Stats>().takeDamage(degats);        
+                if (hit.transform.CompareTag("test")) {
+                    hit.transform.GetComponent<Stats>().takeDamage(transform.GetComponent<DogStats>().power);        
                 }
             }
             isAttacking = true;
         }   
     }
+    
+    public void Hit()
+    {
+        if (transform.GetComponent<DogStats>().health <= 0) return;
+        
+        if (takeDamage)
+        {
+            animators.Play("GetHit");
 
-
-    public void Dead() {
-        if (life <= 0) {
-            isDead = true;
-            animators.Play("Die");
-        }else{
-            isDead = false;
+            StartCoroutine(hitAnimation());
         }
+    }
+    
+    public void Dead()
+    {
+        if (transform.GetComponent<DogStats>().health > 0) return;
+        
+        isDead = true;
+        animators.Play("Die");
+        
+        StartCoroutine(dieAnimation());
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (isDead) return;
+        
+        var objet = collision.gameObject;
+
+        if (!objet.CompareTag("test")) return;
+        if (objet.GetComponent<Stats>().health <= 0) return;
+        
+        transform.GetComponent<DogStats>().takeDamage(objet.GetComponent<Stats>().damage * WorldSettings.getMultiplicator());
+        takeDamage = true;
+    }
+    
+    IEnumerator dieAnimation()
+    {
+        yield return new WaitForSeconds(2);
+        
+        SceneManager.LoadScene("LaunchScene");
+    }
+
+    IEnumerator hitAnimation()
+    {
+        yield return new WaitForSeconds(0.8f);
+
+        takeDamage = false;
     }
 }

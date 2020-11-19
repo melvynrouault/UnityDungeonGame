@@ -1,37 +1,65 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+using Random = UnityEngine.Random;
+
 public class Stats : MonoBehaviour
 {
     Animator animators; 
-    public int maxHealth;
-    int currentHealth;
+    
+    public float health;
+    public float damage;
+    public float animationTime;
+    
+    public GameObject HealthLoot;
+    public GameObject DefenseLoot;
+    public GameObject PowerLoot;
+
+    private bool _takeDamage;
+    
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth;
+        health *= WorldSettings.getMultiplicator();
         animators = gameObject.GetComponent<Animator>();
     }
- 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
     public void takeDamage(int domage){
-        currentHealth -=domage;
-        Debug.Log("TakeDamage");
-        if(currentHealth <= 0){
+        health -=domage;
+
+        if(health <= 0)
             Die();
-        }
     }
+    
     void Die(){
-        Debug.Log("Die");
- 
         animators.Play("Die");
-        Destroy(transform.gameObject, 5);
- 
- 
+
+        System.Random rdm = new System.Random();
+        var hasDrop = rdm.Next(1, 3);
+
+        if (hasDrop == 1)
+        {
+            var loot = rdm.Next(1, 4);
+            GameObject lootObject;
+
+            switch (loot)
+            {
+                case 1:
+                    lootObject = Instantiate(HealthLoot, transform.position, transform.rotation);
+                    lootObject.name = HealthLoot.name;
+                    break;
+                case 2:
+                    lootObject = Instantiate(PowerLoot, transform.position, transform.rotation);
+                    lootObject.name = PowerLoot.name;
+                    break;
+                case 3:
+                    lootObject = Instantiate(DefenseLoot, transform.position, transform.rotation);
+                    lootObject.name = DefenseLoot.name;
+                    break;
+            }
+        }
+        
+        Destroy(transform.gameObject, animationTime);
     }
 }

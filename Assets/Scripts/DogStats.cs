@@ -1,54 +1,58 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DogStats : MonoBehaviour
 {
+    public float health { get => dogHealth; set => dogHealth = value; }
+    public float dogHealth;
 
-    public int health;
-    public float power;
-    public float defense;
-    public bool isAttackPowerUp;
+    public int power { get => dogPower; set => dogPower = value; }
+    public int dogPower;
+    
+    public float defense { get => dogDefense; set => dogDefense = value; }
+    public float dogDefense;
+    
+    public GameObject healthCounter;
+    public GameObject powerCounter;
+    public GameObject armorCounter;
+    public GameObject playMode;
 
-    public GameObject useConsummable;
-
+    private int maxHealth = 100;
 
     // Start is called before the first frame update
     void Start()
     {
-        health = 100;
-        power = 10.00f;
-        defense = 10.00f;
-        isAttackPowerUp = false;
+        playMode.GetComponent<Text>().text = "Mode " + WorldSettings.Instance.Level;
+        updateStats();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void updateStats()
     {
+        healthCounter.GetComponent<Text>().text = health + " / " + maxHealth;
+        powerCounter.GetComponent<Text>().text = power.ToString();
+        armorCounter.GetComponent<Text>().text = defense.ToString();
+    }
+
+    public void takeDamage(float damage)
+    {
+        if (defense > 0)
+        {
+            if (defense > damage)
+            {
+                defense -= damage;
+                damage = 0;
+            }
+            else
+            {
+                damage -= defense;
+                defense = 0;
+            }
+        }
         
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public float getPower() {
-        return power;
-    }
-
-    public void setPower(float power) {
-        this.power = power;
-    }
-
-    public float getDefense() {
-        return defense;
-    }
-
-    public void setDefense(float defense) {
-        this.defense = defense;
-    }
+        health -= damage;
+        
+        updateStats();
+    }    
 }

@@ -1,120 +1,77 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class DogInventory : MonoBehaviour
 {
     public string inputConsumable;
 
-    public int slot;
-    public string slotItem;
-
-    public int localHealth;
-    public float localPower;
-    public float localDefense;
-
-	public GameObject Props_PotionBig_Red;
-	public GameObject Props_PotionBig_Purple;
-	public GameObject Props_PotionBig_Blue;
-    public GameObject resetItem;
-
+    public bool hasItemInSlot;
 
     public GameObject appleItem;
     public GameObject meatItem;
     public GameObject mpItem;
-
     
-
-
-
     // Start is called before the first frame update
     void Start()
     {
-
-        slot = 0;
-        slotItem="";
+        hasItemInSlot = false;
         appleItem.SetActive(false);
         meatItem.SetActive(false);
         mpItem.SetActive(false);
-
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKey(inputConsumable)) {
-            if (slot == 1) {
+            var dogStats = gameObject.GetComponent<DogStats>();
+            
+            if (hasItemInSlot) {
+                hasItemInSlot = false;
                 
-                slot = 0;
-                slotItem="";
-
                 if(appleItem.activeSelf) {
-                    Debug.Log("Add health");
                     appleItem.SetActive(false);
-                    localHealth = gameObject.GetComponent<DogStats>().getHealth();
-                    localHealth += 20;
-                    if(localHealth > 100) {
-                        Debug.Log("full hp");
-                        localHealth = 100;
-                    } else {
-                        Debug.Log("not full hp");
-                    }
-                    gameObject.GetComponent<DogStats>().setHealth(localHealth);
+                    var health = dogStats.health + 20;
+                    
+                    dogStats.health = health > 100 ? 100 : health;
                 }
 
                 if(meatItem.activeSelf) {
-                    Debug.Log("Add power");
                     meatItem.SetActive(false);
-                    localPower = gameObject.GetComponent<DogStats>().getPower();
-                    localPower += 5.00f;
-                    gameObject.GetComponent<DogStats>().setPower(localPower);
-
+                    dogStats.power += 5;
                 }
 
                 if(mpItem.activeSelf) {
-                    Debug.Log("Add Defense");
                     mpItem.SetActive(false);
-                    localDefense = gameObject.GetComponent<DogStats>().getDefense();
-                    localDefense += 5.00f;
-                    gameObject.GetComponent<DogStats>().setDefense(localDefense);
-
+                    dogStats.defense += 5;
                 }
-                Debug.Log("Item reset");
             }
+            
+            dogStats.updateStats();
         }
     }
 
     private void OnTriggerEnter(Collider col) {
         if (col.name == "Props_PotionBig_Red" || col.name == "Props_PotionBig_Purple" || col.name == "Props_PotionBig_Blue") {
-            if (slot == 0) {
-                slot++;
-                slotItem = col.name;
+            if (!hasItemInSlot) {
+                hasItemInSlot = true;
                 
-                Debug.Log("ItemName : " + slotItem);
-
-                if (col.name == "Props_PotionBig_Red") {
-
-                    appleItem.SetActive(true);
-
-                    Debug.Log("Apple Appears");
-
+                switch (col.name)
+                {
+                    case "Props_PotionBig_Red":
+                        appleItem.SetActive(true);
+                        break;
+                    case "Props_PotionBig_Purple":
+                        meatItem.SetActive(true);
+                        break;
+                    case "Props_PotionBig_Blue":
+                        mpItem.SetActive(true);
+                        break;
                 }
-
-                if (col.name == "Props_PotionBig_Purple") {
-
-                    meatItem.SetActive(true);
-
-                    Debug.Log("Meat Appears");
-
-                }
-
-                if (col.name == "Props_PotionBig_Blue") {
-
-                    mpItem.SetActive(true);
-
-                    Debug.Log("mp Appears");
-
-                }
+                
+                Destroy(col.gameObject);
             }
         }        
     }
